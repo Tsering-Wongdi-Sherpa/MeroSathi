@@ -1,13 +1,14 @@
 from django import forms
-from userprofile.models import Profile
-from django.contrib.auth.models import User
+from questionPlatform.models import Question, Answer
+# from .models import Answer
 
-class RegForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput())
-    class Meta():
-        model = User
-        fields = ('username','password','email')
-class ProfileForm(forms.ModelForm):
-    class Meta():
-        model = Profile
-        fields = ('student_id','photo')
+
+class questionForm(forms.ModelForm):
+    class Meta:
+        model = Question
+        fields = ['question_text']
+
+class answerForm(forms.ModelForm):
+    class Meta:
+        model = Answer
+        fields = ['answer_text']

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>meroSathi</title>
+</head>
+<body>
+    <h1>Questions</h1>
+    <form action='add/' method='GET'>
+        <button type='submit'> Add Question</button>
+    </form>
+
+    <p>
+        {% for data in show_all %}
+            <p>  <a href="/question/answers/{{ data.id }}"> {{ data.question_text }} </a><br></p>
+        {% endfor %}
+        <br>
+
+    </p>
+</body>
+</html>
