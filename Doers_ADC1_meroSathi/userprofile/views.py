@@ -1,75 +1,118 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
-from userprofile.forms import RegForm, ProfileForm
+from .models import Question, Answer
+from questionPlatform.forms import questionForm, answerForm
+
 from django.contrib import messages
-from django.contrib.auth.models import auth
-# Create your views here.
+
+
 def index(request):
-    return render(request,'userprofile/index.html')
+    show_all = Question.objects.all()
 
-def register(request):
-    registered = False
+    context_dict = {
+        'show_all': show_all,
+    }
+
+    return render(request, 'index.html', context_dict)
+
+
+def answers(request, id):
+    ques = Question.objects.get(id=id)
+
+    ans = Answer.objects.filter(question=ques)
+
+    context_dict = {
+        'questions': ques,
+        'answers': ans,
+    }
+
+    return render(request, 'answers.html', context_dict)
+
+
+def add_questions(request):
+    form = questionForm()
     if request.method == "POST":
-        form = RegForm(request.POST)
-        profile_form = ProfileForm(request.POST, request.FILES)
-        if form.is_valid() and profile_form.is_valid():
-            user = form.save()
-            user.set_password(user.password)
-            user.save()
-            profile = profile_form.save(commit=False)
-            profile.user = user
-            if 'photo' in request.FILES:
-                print('Got it....')
-                profile.photo = request.FILES['photo']
-                print(request.FILES['photo'])
-            profile.save()
-            registered = True
+        form = questionForm(request.POST, request.FILES)
+        if form.is_valid():
+            question = form.save(commit=False)
+            question.save()
+            # messages.success(request, "Added Question Sucessfully")
             return redirect('index')
-    else:
-        form = RegForm()
-        profile_form = ProfileForm()
-    return render(request, "userprofile/signup.html", {"form":form, "profile_form":profile_form, 'registered':registered})
-#login to system
-def user_login(request):
+
+    context_dict = {'form': form}
+    return render(request, 'addQuestions.html', context_dict)
+
+
+def edit_question(request, id):
+    edit_ques = Question.objects.get(id=id)
+
+    if request.method == "POST":
+        form = questionForm(request.POST, request.FILES, instance=edit_ques)
+        if form.is_valid():
+            form.save()
+            return redirect('/')
+
+    form = questionForm(instance=edit_ques)
+    context_dict = {'form': form}
+    return render(request, 'edit_question.html', context_dict)
+
+
+def post_answer(request, id):
+    ques_post = Question.objects.get(id=id)
+    form = answerForm()
+
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(username=username, password=password)
-        if user:
-            if user.is_active:
-                login(request, user)
-                return redirect('index')
-            else:
-                messages.error(request, 'Your account was inactive !!!')
-        else:
-            messages.info(request, 'Invalid login details given !!!')
-    else:
-        return render(request, 'userprofile/login.html', {})
-        
-@login_required
-def logout(request): #This method is used to logout the user
-	auth.logout(request)
-	return redirect('login')
+        form = answerForm(request.POST)
+        if form.is_valid():
+            cmt_ans = form.save(commit=False)
+            cmt_ans.question = ques_post
+            cmt_ans.save()
 
-@login_required(login_url='login')
-def profile(request):
-	return render(request, 'userprofile/user.html', {})
+            return redirect('/question/answers/' + id)
 
-@login_required(login_url='login')
-#@allowed_users(allowed_roles=['admin'])
-def updateProfile(request):
-
-	profile = Profile.objects.get()
-	form = ProfileForm(instance=profile)
-
-	if request.method == 'POST':
-		form = ProfileForm(request.POST, instance=profile)
-		if form.is_valid():
-			form.save()
-			return redirect('profile')
-
-	return render(request, 'userprofile/updateprofile.html', {"form":form})
+    context_dict = {'form': form}
+    return render(request, 'postAnswer.html', context_dict)
 
 
+def delete_question(request, id):
+    ques = Question.objects.get(id=id)
+    ques.delete()
 
+    return redirect('/')
+
+# # Create your views here.
+# def upload_question(request):
+#     if request.method == "POST":
+#         form = OurForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('question_list')
+#     else:
+#         form = OurForm()
+#     return render(request, "upload.html", {"form":form})
+#
+# def book_list(request):
+#
+#     context = {}
+#     query = " "
+#
+#     if request.method == "GET":
+#         query = request.GET['q']
+#
+#         question = get_data_queryset(str(query))
+#     # book = Book.objects.all()
+#     return render(request, "question_list.html", context)
+#
+# def get_data_queryset(query=None):
+#     queryset = []
+#     queries = query.split(" ") #
+#     for q in queries:
+#         questions = Question.objects.filter(
+#
+#             Q(title__icontains=q) |
+#             Q(name__icontains=q)
+#         )
+#
+#         for question in questions:
+#             queryset.append(question)
+#
+#     return list(set(queryset))
