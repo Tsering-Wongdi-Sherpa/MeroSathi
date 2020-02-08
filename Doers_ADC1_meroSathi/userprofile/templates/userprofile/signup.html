@@ -1,0 +1,79 @@
+{%  extends 'userprofile/base.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="css/signup.css">
+  </head>
+  <style>
+    body {font-family: Arial, Helvetica, sans-serif;
+      }
+  .box{
+    margin-top: 3em;
+    width:30%;
+    text-align: center;
+    background-color: wheat;
+    margin-left:35%;
+    padding-top:5px;
+  }
+  .box form {border: 3px solid #f1f1f1;}
+
+  .box input[type=text], input[type=password], input[type=email], input[type=image] {
+    width:100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+  }
+
+  .container button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 20%;
+  }
+  .container label{
+    float: left;
+  }
+
+  .container button:hover {
+    opacity: 0.8;
+  }
+  </style>
+  <body>
+    <h3 style="text-align:center;">SignUp Form</h3>
+    {% if request.user.is_active %}
+    {% endif %}
+    <div class="box">
+    <form method="post" action="{% url 'register' %}">
+          {% csrf_token %}
+          <div class="container">
+            <form method="post" enctype="multipart/form-data">
+               {% csrf_token %}
+               <label>Username</label>
+               {{form.username}}
+               <label>Email</label>
+               {{form.email}}
+               <label>Password</label>
+               {{form.password}}
+               <label>Studnet ID</label>
+               {{profile_form.student_id}}
+               <label>Photo</label>
+               {{profile_form.photo}}              
+          </div>
+          <div class="container" style="background-color:#f1f1f1">
+            <button type="submit" class="btn btn-primary btn-sm">Register</button>
+            <br>
+            <a href="{% url 'login' %}">Already Have An Account</a>
+          </div>
+    </form>
+  </div>
+  </body>
+</html>
+{% endblock %}

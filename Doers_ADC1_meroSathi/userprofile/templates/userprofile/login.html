@@ -1,0 +1,108 @@
+{%  extends 'userprofile/base.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="css/profile.css">
+  </head>
+  <!DOCTYPE html>
+  <html lang="en" dir="ltr">
+    <head>
+      <meta charset="utf-8">
+      <title></title>
+      <link rel="stylesheet" href="css/profile.css">
+    </head>
+    <style>
+    body {font-family: Arial, Helvetica, sans-serif;
+        }
+    .box{
+      margin-top: 3em;
+      width:30%;
+      text-align: center;
+      background-color: wheat;
+      margin-left:35%;
+      padding-top: 25px;
+    }
+
+    .box form {border: 3px solid #f1f1f1;}
+
+    .box input[type=text], input[type=password]{
+      width:100%;
+      padding: 12px 20px;
+      margin: 8px 0;
+      display: inline-block;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    .container button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 14px 20px;
+      margin: 8px 0;
+      border: none;
+      cursor: pointer;
+      width: 30%;
+    }
+
+    .container button:hover {
+      opacity: 0.8;
+    }
+
+    .container {
+      padding: 16px;
+    }
+
+    span.psw {
+      float: right;
+      padding-top: 16px;
+    }
+
+    /* Change styles for span and cancel button on extra small screens */
+    @media screen and (max-width: 300px) {
+      span.psw {
+         display: block;
+         float: none;
+      }
+      .cancelbtn {
+         width: 100%;
+      }
+    }
+    </style>
+
+  <body>
+    <div class="content">
+    <div class="section-inner clearfix">
+    <h3 style="text-align:center;">Login Form</h3>
+
+    {% if messages %}
+        <ul>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    <form method="post" action="{% url 'login' %}">
+      <div class="box">
+          {% csrf_token %}
+          {# A more "HTML" way of creating the login form#}
+          <div class="container">
+            <label><b>Username</b></label>
+            <input type="text" placeholder="Enter Username" name="username" required>
+            <label><b>Password</b></label>
+            <input type="password" placeholder="Enter Password" name="password" required>
+          </div>
+          <div class="container" style="background-color:#f1f1f1">
+            <button type="submit"> Login</button><br>
+            <a href="{% url 'register' %}">Not Have An Account</a>
+          </div>
+        </div>
+    </form>
+
+    </div>
+</div>
+  </body>
+</html>
+{% endblock %}
