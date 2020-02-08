@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'userprofile.apps.UserprofileConfig',
+    'questionPlatform',
+    'crispy_forms',
+
 ]
 
 MIDDLEWARE = [
@@ -120,5 +122,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-MEDIA_URL = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = "/media/"
+
+# Login redirect
+LOGIN_REDIRECT_URL ='/home'
+
+# Logout redirect
+LOGOUT_REDIRECT_URL ="/"
+
